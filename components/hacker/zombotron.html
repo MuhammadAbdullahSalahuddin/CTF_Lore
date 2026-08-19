@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zombotron Pure Background - Fixed</title>
+
+    <style>
+      /* Force Reset: Crush any default browser or Next.js white backgrounds */
+      html,
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+        background-color: #0a0d07 !important;
+      }
+
+      /* Layer 0: The Unstoppable Dark Green Base */
+      .zombo-bg-layer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: #0a0d07;
+        background-image: radial-gradient(
+          circle at center,
+          #2a301c 0%,
+          #0a0d07 100%
+        );
+        z-index: 0;
+      }
+
+      /* Layer 1: Floating Particles */
+      #ambient-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 1;
+      }
+
+      /* Layer 2: Heavy Shadow Edges */
+      .vignette {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: radial-gradient(
+          circle at center,
+          transparent 15%,
+          rgba(20, 24, 15, 0.95) 100%
+        );
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      /* Layer 3: CRT Monitor Lines */
+      .crt-scanlines {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.2),
+          rgba(0, 0, 0, 0.2) 1px,
+          transparent 1px,
+          transparent 3px
+        );
+        pointer-events: none;
+        z-index: 3;
+      }
+
+      /* Layer 4: Screen Flicker */
+      .screen-flicker {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(132, 150, 83, 0.02);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 4;
+        animation: flicker 4s infinite;
+      }
+
+      @keyframes flicker {
+        0% {
+          opacity: 0.02;
+        }
+        5% {
+          opacity: 0.05;
+        }
+        10% {
+          opacity: 0.01;
+        }
+        15% {
+          opacity: 0.06;
+        }
+        100% {
+          opacity: 0.02;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="zombo-bg-layer"></div>
+
+    <canvas id="ambient-canvas"></canvas>
+    <div class="vignette"></div>
+    <div class="crt-scanlines"></div>
+    <div class="screen-flicker"></div>
+
+    <script>
+      const canvas = document.getElementById("ambient-canvas");
+      const ctx = canvas.getContext("2d");
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener("resize", resize);
+      resize();
+
+      const particles = [];
+      for (let i = 0; i < 75; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 2.5 + 0.5,
+          speedY: -(Math.random() * 0.5 + 0.1),
+          speedX: (Math.random() - 0.5) * 0.2,
+          opacity: Math.random() * 0.4 + 0.1,
+        });
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach((p) => {
+          p.y += p.speedY;
+          p.x += p.speedX;
+
+          if (p.y < 0) p.y = canvas.height;
+          if (p.x < 0) p.x = canvas.width;
+          if (p.x > canvas.width) p.x = 0;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(132, 150, 83, ${p.opacity})`;
+          ctx.fill();
+        });
+      }
+
+      animate();
+    </script>
+  </body>
+</html>

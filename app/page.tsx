@@ -1,89 +1,87 @@
 // app/page.tsx
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useTransform } from "framer-motion";
-import { useScrollCorruption } from "@/lib/useScrollCorruption";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { motion } from "framer-motion";
 import CorporateHome from "@/components/corporate/CorporateHome";
 import TerminalOverlay from "@/components/hacker/TerminalOverlay";
+import GlitchFlicker from "@/components/hacker/GlitchFlicker";
+
+type Phase = "browsing" | "stuck" | "glitching" | "terminal";
+
+const BLOCKED_KEYS = [
+  "ArrowDown",
+  "ArrowUp",
+  "PageDown",
+  "PageUp",
+  "Space",
+  "Home",
+  "End",
+];
 
 export default function LorePage() {
-  const { triggerRef, corruption } = useScrollCorruption();
-  const [handoff, setHandoff] = useState(false);
+  const [phase, setPhase] = useState<Phase>("browsing");
+  const lockedRef = useRef(false);
 
-  // Once corruption maxes out, lock scroll and mount the terminal.
-  // Runs once — handoff never reverts even if corruption value dips
-  // afterward (e.g. from a resize-triggered recalculation).
   useEffect(() => {
-    const unsubscribe = corruption.on("change", (v) => {
-      if (v >= 0.98 && !handoff) {
-        setHandoff(true);
-        window.scrollTo({ top: 0, behavior: "instant" });
-        document.body.style.overflow = "hidden";
-        document.body.style.overflow = "hidden";
+    if (phase !== "browsing") return;
+    const handleScroll = () => {
+      const atBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 4;
+      if (atBottom && !lockedRef.current) {
+        lockedRef.current = true;
+        setPhase("stuck");
       }
-    });
-    return unsubscribe;
-  }, [corruption, handoff]);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [phase]);
 
-  // Everything below is driven straight off scroll position through the
-  // trigger zone — no timers, fully reversible until handoff fires.
-  const filter = useTransform(
-    corruption,
-    [0, 0.5, 1],
-    [
-      "saturate(1) brightness(1) blur(0px)",
-      "saturate(0.15) brightness(0.9) blur(0px)",
-      "saturate(0) brightness(0.35) blur(1px)",
-    ],
-  );
-  const skew = useTransform(corruption, [0, 1], [0, -0.4]);
-  const scale = useTransform(corruption, [0, 1], [1, 0.97]);
-  const tintOpacity = useTransform(corruption, [0.4, 1], [0, 0.35]);
-  const grainOpacity = useTransform(corruption, [0.3, 1], [0, 0.5]);
+  useEffect(() => {
+    if (phase === "browsing") return;
+    const block = (e: Event) => e.preventDefault();
+    const blockKeys = (e: KeyboardEvent) => {
+      if (BLOCKED_KEYS.includes(e.code)) e.preventDefault();
+    };
+    window.addEventListener("wheel", block, { passive: false });
+    window.addEventListener("touchmove", block, { passive: false });
+    window.addEventListener("keydown", blockKeys);
+    return () => {
+      window.removeEventListener("wheel", block);
+      window.removeEventListener("touchmove", block);
+      window.removeEventListener("keydown", blockKeys);
+    };
+  }, [phase]);
+
+  useEffect(() => {
+    if (phase !== "stuck") return;
+    const t = setTimeout(() => setPhase("glitching"), 2000);
+    return () => clearTimeout(t);
+  }, [phase]);
+
+  const handleGlitchComplete = useCallback(() => setPhase("terminal"), []);
 
   return (
-    <div className="relative">
-      {/* The corporate page itself — filter/skew/scale applied directly
-          to this wrapper, so degradation actually renders (fixes the
-          earlier DefacementOverlay bug where filter sat on a sibling
-          with display:contents and touched nothing). */}
-      <motion.div style={{ filter, skewY: skew, scale }} className="origin-top">
-        <CorporateHome triggerRef={triggerRef} />
-      </motion.div>
+    <div className="relative overflow-x-hidden">
+      <CorporateHome />
 
-      {/* Phosphor-green color tint, rising with corruption. Sits above
-          the corporate layer, doesn't intercept clicks/scroll. */}
-      <motion.div
-        style={{ opacity: tintOpacity }}
-        className="pointer-events-none fixed inset-0 z-30 bg-[#4ade80] mix-blend-color"
-      />
+      {phase === "glitching" && (
+        <GlitchFlicker durationMs={3000} onComplete={handleGlitchComplete} />
+      )}
 
-      {/* Grain texture, same rise curve. Requires public/textures/grain.png
-          — until that's added this just renders as nothing, harmless. */}
-      <motion.div
-        style={{ opacity: grainOpacity }}
-        className="pointer-events-none fixed inset-0 z-30 mix-blend-overlay"
-      >
-        <div
-          className="h-full w-full"
-          style={{
-            backgroundImage:
-              "url(/flat-design-vhs-effect-background/8548084.jpg)",
-            backgroundSize: "180px",
-          }}
-        />
-      </motion.div>
-
-      {handoff && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black"
-        >
-          <TerminalOverlay />
-        </motion.div>
+      {phase === "terminal" && (
+        <>
+          <div className="fixed inset-0 z-40 bg-black" />
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.2, delay: 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center"
+          >
+            <TerminalOverlay />
+          </motion.div>
+        </>
       )}
     </div>
   );

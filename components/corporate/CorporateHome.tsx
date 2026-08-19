@@ -15,18 +15,14 @@ interface CorporateHomeProps {
 // Plain, boring, fully clean corporate site. No CRT/glitch language lives
 // in here at all — this component doesn't even know corruption exists.
 // The overlay/parent handles all of that; this just renders the page.
-export default function CorporateHome({ triggerRef }: CorporateHomeProps) {
+// components/corporate/CorporateHome.tsx — drop the prop entirely
+export default function CorporateHome() {
   return (
     <div className="bg-white">
       <Navbar />
       <Hero />
       <ProductGrid />
       <AboutSection />
-
-      {/* Trigger zone — last stretch before the footer. Scroll progress
-          through this div drives the corruption value in the parent. */}
-      <div ref={triggerRef} className="h-[15vh] bg-slate-50" />
-
       <Footer />
     </div>
   );

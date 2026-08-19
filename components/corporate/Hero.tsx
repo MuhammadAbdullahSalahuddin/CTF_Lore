@@ -28,7 +28,7 @@ export default function Hero() {
 
       <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-slate-100">
         <img
-          src="/images/hero-lab.jpg"
+          src="/images/labotry1.jpg"
           alt="TASMOC research laboratory"
           className="h-full w-full object-cover"
         />
