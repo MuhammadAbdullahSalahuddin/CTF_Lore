@@ -43,3 +43,60 @@ body {
 .font-corporate {
   font-family: var(--font-onest), monospace;
 }
+
+:root {
+  --term-green: #00ff88;
+  --term-dim: #004422;
+  --term-bg: #050505;
+}
+
+.portal-container {
+  background: var(--term-bg);
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: monospace;
+}
+
+.terminal-field {
+  margin-bottom: 1.5rem;
+}
+
+.terminal-label {
+  display: block;
+  color: var(--term-green);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.25rem;
+}
+
+.terminal-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--term-dim);
+  color: #fff;
+  width: 100%;
+  font-family: monospace;
+  padding: 0.5rem 0;
+  outline: none;
+}
+
+.terminal-input:focus {
+  border-bottom-color: var(--term-green);
+}
+
+.portal-header {
+  color: var(--term-green);
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--term-dim);
+  padding-bottom: 0.5rem;
+}
+
+.status-dot {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+.status-dot.green {
+  color: var(--term-green);
+}

@@ -1,12 +1,12 @@
 // components/hacker/TerminalOverlay.tsx
-'use client'
+"use client";
 
-import { TypeAnimation } from 'react-type-animation'
-import { useState } from 'react'
-import { HANDLER, GROUP_NAME, TARGET_URL } from '@/lib/constants'
+import { TypeAnimation } from "react-type-animation";
+import { useState } from "react";
+import { HANDLER, GROUP_NAME, TARGET_URL } from "@/lib/constants";
 
 export default function TerminalOverlay() {
-  const [showButton, setShowButton] = useState(false)
+  const [showButton, setShowButton] = useState(false);
 
   return (
     <div className="relative w-[90vw] max-w-2xl font-terminal text-[#4ade80]">
@@ -31,10 +31,10 @@ export default function TerminalOverlay() {
           wrapper="div"
           speed={65}
           style={{
-            whiteSpace: 'pre-wrap',
-            fontSize: '1.25rem',
+            whiteSpace: "pre-wrap",
+            fontSize: "1.25rem",
             lineHeight: 1.7,
-            letterSpacing: '0.02em',
+            letterSpacing: "0.02em",
           }}
           cursor
           repeat={0}
@@ -42,7 +42,7 @@ export default function TerminalOverlay() {
 
         {showButton && (
           <a
-            href={`https://${TARGET_URL}`}
+            href="/portal/login"
             className="mt-8 inline-block border-2 border-dashed border-[#4ade80] px-6 py-2 text-lg tracking-widest text-[#4ade80] transition-colors hover:bg-[#4ade80]/10"
           >
             ACKNOWLEDGE
@@ -50,5 +50,5 @@ export default function TerminalOverlay() {
         )}
       </div>
     </div>
-  )
+  );
 }
