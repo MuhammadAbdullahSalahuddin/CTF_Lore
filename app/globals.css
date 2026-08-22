@@ -64,7 +64,7 @@ body {
 .terminal-label {
   display: block;
   color: var(--term-green);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   letter-spacing: 0.1em;
   margin-bottom: 0.25rem;
 }

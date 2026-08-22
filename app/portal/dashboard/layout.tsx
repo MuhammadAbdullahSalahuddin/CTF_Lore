@@ -6,10 +6,10 @@ import DashboardShell from "@/components/dashboard/DashboardShell";
 import CRTFrame from "@/components/shared/CRTFrame";
 
 const TABS = [
-  { label: "lore", href: "/dashboard/lore" },
-  { label: "hints", href: "/dashboard/hints" },
-  { label: "scoreboard", href: "/dashboard/scoreboard" },
-  { label: "profile", href: "/dashboard/profile" },
+  { label: "lore", href: "/portal/dashboard/lore" },
+  { label: "hints", href: "/portal/dashboard/hints" },
+  { label: "scoreboard", href: "/portal/dashboard/scoreboard" },
+  { label: "profile", href: "/portal/dashboard/profile" },
 ];
 
 export default function DashboardLayout({
