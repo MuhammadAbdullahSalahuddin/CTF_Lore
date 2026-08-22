@@ -21,10 +21,9 @@ export default function DashboardLayout({
 
   return (
     <CRTFrame>
-      <div className="flex min-h-screen flex-col font-terminal text-[#4ade80]">
-        {/* Tab bar */}
-        <nav className="flex items-center gap-6 border-b border-[#4ade80]/30 bg-[#0a0f0d]/90 px-6 py-3">
-          <span className="text-sm tracking-widest text-[#4ade80]/50">
+      <div className="flex min-h-screen flex-col font-terminal text-[#4ade80] text-lg">
+        <nav className="flex items-center gap-6 border-b border-[#4ade80]/30 bg-[#0a0f0d]/90 px-6 py-4">
+          <span className="text-base tracking-widest text-[#4ade80]/70">
             CREW://
           </span>
           {TABS.map((tab) => {
@@ -33,10 +32,10 @@ export default function DashboardLayout({
               <Link
                 key={tab.href}
                 href={tab.href}
-                className={`text-lg tracking-wide transition-colors ${
+                className={`text-xl tracking-wide transition-colors ${
                   active
                     ? "text-[#4ade80]"
-                    : "text-[#4ade80]/40 hover:text-[#4ade80]/70"
+                    : "text-[#4ade80]/60 hover:text-[#4ade80]"
                 }`}
               >
                 [{tab.label}]
@@ -45,10 +44,10 @@ export default function DashboardLayout({
           })}
         </nav>
 
-        {/* Page content */}
-        <main className="flex-1 overflow-y-auto p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto p-6 text-lg leading-relaxed">
+          {children}
+        </main>
 
-        {/* Cosmetic shell strip — always available, navigation-only */}
         <DashboardShell tabs={TABS} />
       </div>
     </CRTFrame>

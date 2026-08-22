@@ -24,7 +24,9 @@ export default function ScoreboardPage() {
 
   return (
     <div className="mx-auto max-w-2xl font-terminal text-[#4ade80]">
-      <h1 className="mb-6 text-2xl tracking-widest">// SCOREBOARD</h1>
+      <h1 className="mb-6 text-2xl tracking-widest text-glow-strong">
+        // SCOREBOARD
+      </h1>
 
       {/* Submit form */}
       <div className="mb-10 border border-[#4ade80]/30 p-4">

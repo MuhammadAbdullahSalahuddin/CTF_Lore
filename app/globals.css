@@ -15,7 +15,7 @@ body {
 /* Terminal/hacker-phase font — only applied where explicitly requested,
    NOT globally. Corporate phase should stay on a normal sans-serif. */
 .font-terminal {
-  font-family: var(--font-vt323), monospace;
+  font-family: var(--font-jetbrains-mono), monospace;
 }
 
 @keyframes crt-flicker {
@@ -99,4 +99,23 @@ body {
 
 .status-dot.green {
   color: var(--term-green);
+}
+
+.text-glow {
+  text-shadow:
+    0 0 4px rgba(74, 222, 128, 0.8),
+    0 0 12px rgba(74, 222, 128, 0.4);
+}
+
+.text-glow-strong {
+  text-shadow:
+    0 0 6px rgba(74, 222, 128, 0.9),
+    0 0 18px rgba(74, 222, 128, 0.6),
+    0 0 30px rgba(74, 222, 128, 0.3);
+}
+
+.border-glow {
+  box-shadow:
+    0 0 8px rgba(74, 222, 128, 0.15),
+    inset 0 0 8px rgba(74, 222, 128, 0.05);
 }

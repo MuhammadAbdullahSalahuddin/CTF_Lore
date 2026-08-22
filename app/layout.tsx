@@ -1,12 +1,12 @@
 // app/layout.tsx
 import type { Metadata } from "next";
-import { VT323 } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Onest } from "next/font/google";
-const vt323 = VT323({
+const JETBRAIN = JetBrains_Mono({
   weight: "400",
   subsets: ["latin"],
-  variable: "--font-vt323",
+  variable: "--font-jetbrains-mono",
 });
 const onest = Onest({
   subsets: ["latin"],
@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${vt323.variable} ${onest.variable}`}>
+    <html lang="en" className={`${JETBRAIN.variable} ${onest.variable}`}>
       <body>{children}</body>
     </html>
   );

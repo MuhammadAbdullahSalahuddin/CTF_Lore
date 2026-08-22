@@ -3,7 +3,7 @@
 export default function LorePage() {
   return (
     <div className="mx-auto max-w-2xl font-terminal text-[#4ade80]">
-      <h1 className="mb-6 text-2xl tracking-widest text-[#4ade80]">
+      <h1 className="mb-6 text-2xl tracking-widest text-[#4ade80] text-glow-strong">
         // LORE_LOG
       </h1>
 

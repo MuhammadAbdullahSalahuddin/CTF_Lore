@@ -24,8 +24,10 @@ const BREADCRUMBS = [
 export default function HintsPage() {
   return (
     <div className="mx-auto max-w-2xl font-terminal text-[#4ade80]">
-      <h1 className="mb-2 text-2xl tracking-widest">// HINTS_INTEL</h1>
-      <p className="mb-8 text-sm text-[#4ade80]/50">
+      <h1 className="mb-2 text-2xl tracking-widest text-glow-strong">
+        // HINTS_INTEL
+      </h1>
+      <p className="mb-8 text-sm text-[#4ade80]">
         case board — not a walkthrough. follow the thread yourself.
       </p>
 

@@ -129,10 +129,10 @@ export default function DashboardShell({ tabs }: DashboardShellProps) {
   };
 
   return (
-    <div className="border-t border-[#4ade80]/30 bg-[#050505]/95 font-terminal text-[#4ade80]">
+    <div className="border-t border-[#4ade80]/40 bg-[#050505]/95 font-mono text-[#4ade80]">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="w-full px-4 py-1 text-left text-xs tracking-widest text-[#4ade80]/50 hover:text-[#4ade80]/80"
+        className="w-full px-4 py-2 text-left text-sm tracking-widest text-[#4ade80]"
       >
         {open ? "▾ shell" : "▸ shell"}
       </button>
@@ -142,16 +142,16 @@ export default function DashboardShell({ tabs }: DashboardShellProps) {
           className="flex flex-col px-4 pb-3"
           onClick={() => inputRef.current?.focus()}
         >
-          <div className="max-h-40 overflow-y-auto text-sm leading-relaxed">
+          <div className="max-h-48 overflow-y-auto text-base leading-relaxed text-[#4ade80] text-glow-strong">
             {history.map((line, i) => (
-              <div key={i} className="whitespace-pre-wrap">
+              <div key={i} className="whitespace-pre-wrap text-[#4ade80]">
                 {line}
               </div>
             ))}
             <div ref={logEndRef} />
           </div>
 
-          <div className="mt-1 flex items-center gap-2">
+          <div className="mt-2 flex items-center gap-2 text-base text-[#4ade80]">
             <span>$</span>
             <input
               ref={inputRef}
@@ -160,7 +160,7 @@ export default function DashboardShell({ tabs }: DashboardShellProps) {
               onKeyDown={handleKeyDown}
               autoFocus
               spellCheck={false}
-              className="flex-1 bg-transparent text-sm outline-none"
+              className="flex-1 bg-transparent text-base text-[#4ade80] outline-none"
             />
           </div>
         </div>
