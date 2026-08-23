@@ -1,9 +1,12 @@
 "use client";
 
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import DashboardShell from "@/components/dashboard/DashboardShell";
 import CRTFrame from "@/components/shared/CRTFrame";
+import { useCrewAuthStore } from "@/store/crew-auth.store";
+import { crewSilentRefresh } from "@/lib/crew-client";
 
 const TABS = [
   { label: "lore", href: "/portal/dashboard/lore" },
@@ -18,6 +21,15 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const { accessToken, setAuth } = useCrewAuthStore();
+
+  useEffect(() => {
+    // middleware.ts already guaranteed a valid refresh cookie got us here —
+    // this just populates the in-memory access token after a page refresh
+    if (!accessToken) {
+      crewSilentRefresh().then((r) => r && setAuth(r.accessToken, r.email));
+    }
+  }, [accessToken]);
 
   return (
     <CRTFrame>

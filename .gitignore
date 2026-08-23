@@ -43,5 +43,11 @@ next-env.d.ts
 #gemini
 .geminiignore
 
-#gitignore
+#env
+.env
 
+#.env.local
+.env.local
+credentials.csv
+package-lock.json
+README.md
