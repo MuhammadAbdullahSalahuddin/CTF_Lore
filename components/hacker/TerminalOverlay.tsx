@@ -24,7 +24,7 @@ export default function TerminalOverlay() {
             900,
             `> ${HANDLER}: nice, you actually found the seam.\n> TASMOC's public shell was never the target.\n> real target sits behind their PAM portal.\n`,
             800,
-            `> ${HANDLER}: nice, you actually found the seam.\n> TASMOC's public shell was never the target.\n> real target sits behind their PAM portal.\n> entry: ${TARGET_URL}\n`,
+            `> ${HANDLER}: nice, you actually found the seam.\n> TASMOC's public shell was never the target.\n> real target sits behind their PAM portal.\n>\n`,
             300,
             () => setShowButton(true),
           ]}

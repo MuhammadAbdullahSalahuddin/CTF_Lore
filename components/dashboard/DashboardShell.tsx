@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { crewLogout } from "@/lib/crew-client";
+import { useCrewAuthStore } from "@/store/crew-auth.store";
 
 interface Tab {
   label: string;
@@ -14,7 +16,9 @@ interface DashboardShellProps {
 
 export default function DashboardShell({ tabs }: DashboardShellProps) {
   const router = useRouter();
+  const { email } = useCrewAuthStore();
   const [open, setOpen] = useState(true);
+  const clearAuth = useCrewAuthStore((s) => s.clearAuth);
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<string[]>([
     "crew shell v1.0 — type 'help' for commands",
@@ -52,6 +56,7 @@ export default function DashboardShell({ tabs }: DashboardShellProps) {
           "  cat <file>        read a file",
           "  whoami            show your crew profile",
           "  clear             clear this shell",
+          " logout            log out of the crew portal",
         ]);
         break;
 
@@ -91,11 +96,23 @@ export default function DashboardShell({ tabs }: DashboardShellProps) {
 
       case "whoami":
         // TODO: pull from real lore_players session once auth is wired
-        print("crew member — identity unresolved");
+        print(
+          email
+            ? `crew_id: ${email}`
+            : "identity unresolved — try logging in again",
+        );
         break;
 
       case "clear":
         setHistory([]);
+        break;
+
+      case "logout":
+        print("terminating session...");
+        crewLogout().then(() => {
+          clearAuth();
+          router.push("/portal/login");
+        });
         break;
 
       default:
