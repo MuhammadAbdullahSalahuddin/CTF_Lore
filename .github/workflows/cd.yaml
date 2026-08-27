@@ -1,0 +1,125 @@
+name: Lore CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-to-ec2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESSKEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Start EC2 instance
+        run: |
+          aws ec2 start-instances --instance-ids ${{ vars.LORE_INSTANCE_ID }}
+          echo "Waiting for instance to reach running state..."
+          aws ec2 wait instance-running --instance-ids ${{ vars.LORE_INSTANCE_ID }}
+
+      - name: Wait for DuckDNS + SSH to be ready
+        run: |
+          PUBLIC_IP=$(aws ec2 describe-instances \
+            --instance-ids ${{ vars.LORE_INSTANCE_ID }} \
+            --query 'Reservations[0].Instances[0].PublicIpAddress' \
+            --output text)
+          echo "Instance public IP: $PUBLIC_IP"
+
+          for i in $(seq 1 30); do
+            RESOLVED_IP=$(dig +short deadseam.duckdns.org | tail -n1)
+            if [ "$RESOLVED_IP" = "$PUBLIC_IP" ]; then
+              echo "DNS resolved correctly to $RESOLVED_IP"
+              break
+            fi
+            echo "DNS not ready ($RESOLVED_IP != $PUBLIC_IP), retrying... ($i/30)"
+            sleep 10
+          done
+
+          for i in $(seq 1 20); do
+            if nc -z -w3 deadseam.duckdns.org 22; then
+              echo "SSH is up"
+              break
+            fi
+            echo "Waiting for SSH... ($i/20)"
+            sleep 5
+          done
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          NODE_ENV: ${{ vars.NODE_ENV }}
+          LORE_DB_NAME: ${{ secrets.POSTGRES_DB_NAME }}
+          LORE_DB_HOST: ${{ secrets.POSTGRES_DB_HOST }}
+          LORE_DB_PORT: ${{ secrets.POSTGRES_DB_PORT }}
+          LORE_DB_USER: ${{ secrets.POSTGRES_DB_USER }}
+          LORE_REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          LORE_REDIS_PORT: ${{ secrets.REDIS_PORT }}
+          LORE_DB_PASS: ${{ secrets.POSTGRES_DB_PASS }}
+          LORE_REDIS_PASS: ${{ secrets.REDIS_PASS }}
+          CREW_JWT_SECRET: ${{ secrets.CREW_JWT }}
+          CTF_FLAG: ${{ secrets.CTF_FLAG}}
+          DISCORD_SOLVES_WEBHOOK_URL: ${{ secrets.DISCORD_SOLVES_WEBHOOK_URL }}
+        with:
+          host: ${{ vars.domain }}
+          username: ${{ vars.LORE_HOST_USERNAME }}
+          key: ${{ secrets.LORE_AWS_SSH }}
+          envs: NODE_ENV,LORE_DB_NAME,LORE_DB_HOST,LORE_DB_PORT,LORE_DB_USER,LORE_DB_PASS,LORE_REDIS_HOST,LORE_REDIS_PORT,LORE_REDIS_PASS,CREW_JWT_SECRET,CTF_FLAG,DISCORD_SOLVES_WEBHOOK_URL
+          script: |
+            set -e
+            cd /home/ubuntu/CTF_Lore
+
+            # 0. Clear cache proactively — prevents the disk-space wall
+            #    from earlier, cheaper than debugging it again at 2am
+            docker system prune -a -f --volumes=false || true
+
+            # 1. Sync EC2 code with GitHub main
+            git fetch origin main
+            git reset --hard origin/main
+
+            # 2. Write .env using python to guarantee single-line escaping
+            python3 -c '
+            import os
+
+            keys = [
+                "NODE_ENV", "LORE_DB_NAME", "LORE_DB_HOST", "LORE_DB_PORT",
+                "LORE_DB_USER", "LORE_DB_PASS", "LORE_REDIS_HOST", "LORE_REDIS_PORT",
+                "LORE_REDIS_PASS", "CREW_JWT_SECRET", "CTF_FLAG", "DISCORD_SOLVES_WEBHOOK_URL"
+            ]
+
+            with open(".env", "w") as f:
+                for k in keys:
+                    val = os.environ.get(k, "")
+                    escaped = val.replace("\n", "\\n")
+                    f.write(f"{k}={escaped}\n")
+            '
+
+            # 3. Bring up infra containers
+            docker compose up -d postgres redis
+
+            # 4. Rebuild the lore image with new code baked in
+            docker compose build lore
+
+            # 5. Recreate the lore container from the new image
+            docker compose up -d lore
+
+            # 6. Health check
+            echo "Waiting for app to come online..."
+            sleep 10
+            curl -sf http://localhost:3001 > /dev/null || ( \
+            echo "=== DEPLOYMENT FAILED: APP LOGS ===" && \
+            docker compose logs --tail=50 lore && \
+            echo "=== CONTAINER STATUS ===" && \
+            docker compose ps && \
+            exit 1 \
+            )
+
+      - name: Stop EC2 instance
+        if: always()
+        run: |
+          echo "Stopping instance to conserve billing..."
+          aws ec2 stop-instances --instance-ids ${{ vars.LORE_INSTANCE_ID }}
