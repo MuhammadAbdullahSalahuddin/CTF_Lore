@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TypeAnimation } from "react-type-animation";
 
 const LINES = [
@@ -18,13 +18,38 @@ const LINES = [
   },
 ];
 
+const SEEN_KEY = "lore_intro_seen";
+
 export default function LorePage() {
-  // Tracks how many lines have finished typing and are locked in as
-  // static text. The line at this index is the one currently animating;
-  // everything before it is done, everything after hasn't started yet.
   const [revealed, setRevealed] = useState(0);
   const [entryPointShown, setEntryPointShown] = useState(false);
   const [footerShown, setFooterShown] = useState(false);
+
+  // Gate: don't render anything until we've checked localStorage —
+  // this avoids a flash where the animation briefly starts, then
+  // suddenly jumps to fully-revealed a frame later
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    const alreadySeen = localStorage.getItem(SEEN_KEY) === "true";
+    if (alreadySeen) {
+      // Skip straight to the fully-revealed end state — no typing at all
+      setRevealed(LINES.length);
+      setEntryPointShown(true);
+      setFooterShown(true);
+    }
+    setChecked(true);
+  }, []);
+
+  // Once the whole sequence finishes typing for the FIRST time,
+  // record it so future visits skip the animation entirely
+  useEffect(() => {
+    if (footerShown) {
+      localStorage.setItem(SEEN_KEY, "true");
+    }
+  }, [footerShown]);
+
+  if (!checked) return null; // brief blank frame, avoids the flash described above
 
   return (
     <div className="mx-auto max-w-2xl font-terminal text-[#4ade80]">
@@ -34,11 +59,7 @@ export default function LorePage() {
 
       <div className="space-y-6 border-l-2 border-[#4ade80]/30 pl-6 text-lg leading-relaxed">
         {LINES.map((line, i) => {
-          // Only render lines up to and including the current one —
-          // this is what makes it feel sequential rather than all
-          // four TypeAnimation instances typing simultaneously
           if (i > revealed) return null;
-
           const isActive = i === revealed;
 
           return (
@@ -61,9 +82,6 @@ export default function LorePage() {
           );
         })}
 
-        {/* Entry point line — kept as static JSX (not typed) so the
-            colored URL span renders correctly; it appears once all
-            three lines above have finished */}
         {revealed >= LINES.length && (
           <p className="text-[#4ade80]/70">
             {!entryPointShown ? (

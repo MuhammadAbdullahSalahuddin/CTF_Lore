@@ -26,13 +26,15 @@ export default function DashboardLayout({
 
   useEffect(() => {
     if (!accessToken) {
-      crewSilentRefresh().then((r) => r && setAuth(r.accessToken, r.email));
+      crewSilentRefresh().then(
+        (r) => r && setAuth(r.accessToken, r.email, r.crewHandle),
+      );
     }
   }, [accessToken]);
 
   const handleLogout = async () => {
     await crewLogout(); // tells the server to delete the httpOnly cookie
-    clearAuth(); // clears the in-memory access token/email
+    clearAuth(); // clears the in-memory access token/email/crewHandle
     router.push("/portal/login");
   };
 

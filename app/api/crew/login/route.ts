@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await pool.query(
-      `SELECT id, email, password_hash FROM lore_players WHERE email = $1`,
+      `SELECT id, email, password_hash, crew_handle FROM lore_players WHERE email = $1`,
       [email],
     );
     const player = result.rows[0];
@@ -52,7 +52,10 @@ export async function POST(request: NextRequest) {
     const accessToken = await signCrewAccessToken(player.id, player.email);
     const refreshToken = await signCrewRefreshToken(player.id);
 
-    const response = NextResponse.json({ accessToken });
+    const response = NextResponse.json({
+      accessToken,
+      crewHandle: player.crew_handle,
+    });
 
     response.cookies.set("crewRefreshToken", refreshToken, {
       httpOnly: true,

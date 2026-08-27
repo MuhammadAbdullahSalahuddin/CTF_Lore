@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await pool.query(
-      `SELECT id, email FROM lore_players WHERE id = $1`,
+      `SELECT id, email , crew_handle FROM lore_players WHERE id = $1`,
       [payload.playerId],
     );
     const player = result.rows[0];
@@ -34,7 +34,11 @@ export async function POST(request: NextRequest) {
     }
 
     const accessToken = await signCrewAccessToken(player.id, player.email);
-    return NextResponse.json({ accessToken, email: player.email });
+    return NextResponse.json({
+      accessToken,
+      email: player.email,
+      crewHandle: player.crew_handle,
+    });
   } catch {
     return NextResponse.json(
       { message: "Invalid refresh token" },

@@ -8,7 +8,7 @@ import { useCrewAuthStore } from "@/store/crew-auth.store";
 import { crewLogin, getProfile, updateCrewHandle } from "@/lib/crew-client";
 
 export default function ProfilePage() {
-  const { accessToken } = useCrewAuthStore();
+  const { accessToken, setCrewHandle } = useCrewAuthStore();
   const [email, setEmail] = useState("");
   const [handle, setHandle] = useState("");
   const [createdAt, setCreatedAt] = useState("");
@@ -36,6 +36,7 @@ export default function ProfilePage() {
     if (!result) {
       setError("update failed");
     } else {
+      setCrewHandle(handle.trim());
       setEditing(false);
     }
     setSaving(false);
@@ -47,6 +48,7 @@ export default function ProfilePage() {
 
       <div className="mb-4">
         <div className="text-sm text-[#4ade80]/50">CREW_ID</div>
+
         <div>{email}</div>
       </div>
 
@@ -121,7 +123,8 @@ export function LoginPage() {
       return;
     }
 
-    setAuth(result.accessToken, email.trim());
+    const crewHandle = (result as any).crewHandle ?? (result as any).crew_handle ?? undefined;
+    setAuth(result.accessToken, email.trim(), crewHandle);
     setLoading(false);
     setHandshaking(true); // show the handshake sequence, then navigate on completion
   };

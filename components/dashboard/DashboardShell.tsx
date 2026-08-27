@@ -17,6 +17,7 @@ interface DashboardShellProps {
 export default function DashboardShell({ tabs }: DashboardShellProps) {
   const router = useRouter();
   const { email } = useCrewAuthStore();
+  const { crewHandle } = useCrewAuthStore();
   const [open, setOpen] = useState(true);
   const clearAuth = useCrewAuthStore((s) => s.clearAuth);
   const [input, setInput] = useState("");
@@ -97,8 +98,8 @@ export default function DashboardShell({ tabs }: DashboardShellProps) {
       case "whoami":
         // TODO: pull from real lore_players session once auth is wired
         print(
-          email
-            ? `crew_id: ${email}`
+          crewHandle
+            ? `crew: ${crewHandle}`
             : "identity unresolved — try logging in again",
         );
         break;
