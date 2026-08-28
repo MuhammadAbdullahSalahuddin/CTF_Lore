@@ -1,13 +1,15 @@
 name: Lore CD Pipeline
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Lore CI Pipeline"]
+    types: [completed]
+    branches: [main]
 
 jobs:
   deploy-to-ec2:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
