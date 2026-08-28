@@ -49,5 +49,5 @@ next-env.d.ts
 #.env.local
 .env.local
 credentials.csv
-package-lock.json
+
 README.md
