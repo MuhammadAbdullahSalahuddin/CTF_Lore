@@ -5,17 +5,17 @@ const LEADERSHIP = [
   {
     name: "Dr. Farrukh Hameed",
     role: "Chief Executive Officer",
-    image: "/images/Dr_Farukh.png",
+    image: "/images/Dr_Farukh.webp",
   },
   {
     name: "Dr. Ayesha Naveed",
     role: "Chief Scientific Officer",
-    image: "/images/Doctor_Ayesha.png",
+    image: "/images/Doctor_Ayesha.webp",
   },
   {
     name: "Imran Qureshi",
     role: "Chief Financial Officer",
-    image: "/images/Doctor_imran.png",
+    image: "/images/Doctor_imran.webp",
   },
 ];
 

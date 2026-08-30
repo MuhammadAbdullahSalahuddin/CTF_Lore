@@ -1,0 +1,7 @@
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/deadseam.duckdns.org/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/deadseam.duckdns.org/privkey.pem
+
+These files will be updated when the certificate renews.
+Certbot has set up a scheduled task to automatically renew this certificate in the background.
