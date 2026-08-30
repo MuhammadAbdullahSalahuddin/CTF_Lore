@@ -27,7 +27,7 @@ export default function LoginPage() {
       return;
     }
 
-    setAuth(result.accessToken, email.trim());
+    setAuth(result.accessToken, email.trim(), "");
     router.push("/portal/dashboard/lore");
   };
 
