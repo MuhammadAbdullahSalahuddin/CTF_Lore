@@ -1,23 +1,50 @@
 // components/hacker/GlitchFlicker.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const GLITCH_FRAMES = [
-  //   "/Glitchframes/Glitch1.jpg",
-  "/Glitchframes/Glitch2.jpg",
-  "/Glitchframes/Glitch3.jpg",
-  "/Glitchframes/Glitch4.jpg",
-  "/Glitchframes/Glitch5.jpg",
-  //   "/Glitchframes/Glitch6.jpg",
-  "/Glitchframes/Glitch8.jpg",
-  "/Glitchframes/Glitch9.jpg",
-  "/Glitchframes/Glitch10.jpg",
+  "/Glitchframes/Glitch1.webp",
+  "/Glitchframes/Glitch2.webp",
+  "/Glitchframes/Glitch3.webp",
+  "/Glitchframes/Glitch4.webp",
+  "/Glitchframes/Glitch5.webp",
+  "/Glitchframes/Glitch8.webp",
+  "/Glitchframes/Glitch9.webp",
+  "/Glitchframes/Glitch10.webp",
 ];
 
 interface GlitchFlickerProps {
-  durationMs?: number; // total flicker duration
+  durationMs?: number;
   onComplete: () => void;
+}
+
+// Preloads every frame into the browser's image cache before the flicker
+// starts cycling. Without this, the first few random frame picks on a
+// cold (incognito) load stall on network fetch and show as a black
+// screen instead of a glitch frame — this is what fixes that.
+function usePreloadImages(srcs: string[]) {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    let loaded = 0;
+
+    srcs.forEach((src) => {
+      const img = new Image();
+      img.onload = img.onerror = () => {
+        loaded += 1;
+        if (loaded === srcs.length && !cancelled) setReady(true);
+      };
+      img.src = src;
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [srcs]);
+
+  return ready;
 }
 
 // Rapidly cycles through glitch stock images at randomized intervals,
@@ -28,8 +55,17 @@ export default function GlitchFlicker({
 }: GlitchFlickerProps) {
   const [frame, setFrame] = useState(GLITCH_FRAMES[0]);
   const [visible, setVisible] = useState(true);
+  const preloaded = usePreloadImages(GLITCH_FRAMES);
+  const startedRef = useRef(false);
 
   useEffect(() => {
+    // Don't start the flicker cycle until every frame is actually in
+    // browser cache. This is the fix for the incognito black-screen —
+    // previously the cycle started immediately and the first few
+    // Math.random() picks would hit uncached, uncompressed images.
+    if (!preloaded || startedRef.current) return;
+    startedRef.current = true;
+
     const startedAt = Date.now();
     let timeoutId: ReturnType<typeof setTimeout>;
 
@@ -52,7 +88,7 @@ export default function GlitchFlicker({
 
     tick();
     return () => clearTimeout(timeoutId);
-  }, [durationMs, onComplete]);
+  }, [preloaded, durationMs, onComplete]);
 
   if (!visible) return null;
 

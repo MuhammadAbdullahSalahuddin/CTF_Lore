@@ -9,28 +9,28 @@ const PRODUCTS = [
     name: "Cardivex",
     category: "Cardiovascular",
     description: "A once-daily therapy for management of chronic hypertension.",
-    image: "/images/cardiac.jpg",
+    image: "/images/cardiac.webp",
   },
   {
     name: "Neurastol",
     category: "Neurology",
     description:
       "Clinically proven support for early-stage neurological disorders.",
-    image: "/images/photo2_suppliment.png",
+    image: "/images/photo2_suppliment.webp",
   },
   {
     name: "Glycemid",
     category: "Endocrinology",
     description:
       "Advanced glycemic control for adult type-2 diabetes patients.",
-    image: "/images/randompills.png",
+    image: "/images/randompills.webp",
   },
   {
     name: "Immunova",
     category: "Immunology",
     description:
       "Targeted immunomodulatory treatment for autoimmune conditions.",
-    image: "/images/Medicalbottle4.png",
+    image: "/images/Medicalbottle4.webp",
   },
 ];
 

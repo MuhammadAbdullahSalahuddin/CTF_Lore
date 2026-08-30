@@ -8,6 +8,16 @@ import TerminalOverlay from "@/components/hacker/TerminalOverlay";
 import GlitchFlicker from "@/components/hacker/GlitchFlicker";
 
 type Phase = "browsing" | "stuck" | "glitching" | "terminal";
+const GLITCH_FRAMES = [
+  "/Glitchframes/Glitch1.webp",
+  "/Glitchframes/Glitch2.webp",
+  "/Glitchframes/Glitch3.webp",
+  "/Glitchframes/Glitch4.webp",
+  "/Glitchframes/Glitch5.webp",
+  "/Glitchframes/Glitch8.webp",
+  "/Glitchframes/Glitch9.webp",
+  "/Glitchframes/Glitch10.webp",
+];
 
 const BLOCKED_KEYS = [
   "ArrowDown",
@@ -36,6 +46,16 @@ export default function LorePage() {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, [phase]);
+
+  useEffect(() => {
+    if (phase !== "stuck") return;
+    // Warm the browser cache during the 2s "stuck" pause so GlitchFlicker's
+    // own preload effect resolves near-instantly once it mounts.
+    GLITCH_FRAMES.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
   }, [phase]);
 
   useEffect(() => {
