@@ -7,7 +7,8 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white/95 px-8 py-4 backdrop-blur">
       <div className="flex items-center gap-2">
-        <div className="h-8 w-8 rounded bg-[#0f4c81]" />
+        <img src="/images/tasmoc-logo.svg" className="h-12 w-12" />
+
         <span className="text-lg font-semibold tracking-tight text-slate-900">
           TASMOC
         </span>
