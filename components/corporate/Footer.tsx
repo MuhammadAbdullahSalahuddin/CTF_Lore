@@ -14,7 +14,6 @@ export default function Footer() {
     <footer className="border-t border-slate-200 bg-slate-50 px-8 py-12 md:px-16">
       <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
         <div className="flex items-center gap-2">
-          <div className="h-6 w-6 rounded bg-[#0f4c81]" />
           <span className="text-sm font-semibold text-slate-700">
             TASMOC Pharmaceuticals
           </span>
@@ -27,6 +26,7 @@ export default function Footer() {
             </li>
           ))}
         </ul>
+        <img src="images/tasmoc-logo.svg" className="h-12 w-12" />
       </div>
 
       <p className="mt-8 text-xs text-slate-400">
