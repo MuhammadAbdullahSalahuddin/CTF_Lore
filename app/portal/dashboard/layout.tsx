@@ -10,7 +10,6 @@ import { crewSilentRefresh, crewLogout } from "@/lib/crew-client";
 
 const TABS = [
   { label: "lore", href: "/portal/dashboard/lore" },
-  { label: "hints", href: "/portal/dashboard/hints" },
   { label: "scoreboard", href: "/portal/dashboard/scoreboard" },
   { label: "profile", href: "/portal/dashboard/profile" },
 ];

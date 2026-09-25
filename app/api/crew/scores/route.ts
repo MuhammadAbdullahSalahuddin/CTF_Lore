@@ -6,7 +6,7 @@ export async function GET() {
     `SELECT lp.crew_handle, fs.submitted_at
      FROM flag_submissions fs
      JOIN lore_players lp ON lp.id = fs.player_id
-     ORDER BY fs.submitted_at ASC`,
+     ORDER BY fs.points DESC, fs.submitted_at ASC`,
   );
 
   return NextResponse.json({ scores: result.rows });

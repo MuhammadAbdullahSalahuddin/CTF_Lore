@@ -13,3 +13,5 @@ CREATE TABLE flag_submissions (
   player_id   UUID UNIQUE REFERENCES lore_players(id) ON DELETE CASCADE,
   submitted_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+ALTER TABLE flag_submissions ADD COLUMN points INT NOT NULL DEFAULT 0;
