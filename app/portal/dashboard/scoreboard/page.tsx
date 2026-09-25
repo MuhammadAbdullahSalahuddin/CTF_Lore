@@ -5,6 +5,7 @@ import { useCrewAuthStore } from "@/store/crew-auth.store";
 
 interface ScoreRow {
   crew_handle: string;
+  points:number;
   submitted_at: string;
 }
 
@@ -124,6 +125,7 @@ export default function ScoreboardPage() {
               <span>
                 #{i + 1} — {s.crew_handle}
               </span>
+                <span className="text-[#4ade80]/70 text-sm">{s.points} pts</span>
               <span className="text-[#4ade80]/50 text-sm">
                 {new Date(s.submitted_at).toLocaleTimeString()}
               </span>
