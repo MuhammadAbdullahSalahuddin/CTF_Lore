@@ -1,5 +1,5 @@
 export const HANDLER = "thebe562";
-export const GROUP_NAME = "<placeholder — still TBD per our lore discussion>";
+export const GROUP_NAME = "";
 export const TARGET_URL = "pam-ctf.duckdns.org";
 
 export const PHOSPHOR = "#4ade80";

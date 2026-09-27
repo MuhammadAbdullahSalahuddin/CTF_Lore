@@ -64,6 +64,8 @@ jobs:
           CREW_JWT_SECRET: ${{ secrets.CREW_JWT }}
           CTF_FLAG: ${{ secrets.CTF_FLAG}}
           DISCORD_SOLVES_WEBHOOK_URL: ${{ secrets.DISCORD_SOLVES_WEBHOOK_URL }}
+          SMTP_USER: ${{ secrets.APP_USERNAME }}
+          SMTP_PASS: ${{ secrets.APP_PASSWORD }}
         with:
           host: ${{ vars.domain }}
           username: ${{ vars.LORE_HOST_USERNAME }}
@@ -88,7 +90,7 @@ jobs:
             keys = [
                 "NODE_ENV", "LORE_DB_NAME", "LORE_DB_HOST", "LORE_DB_PORT",
                 "LORE_DB_USER", "LORE_DB_PASS", "LORE_REDIS_HOST", "LORE_REDIS_PORT",
-                "LORE_REDIS_PASS", "CREW_JWT_SECRET", "CTF_FLAG", "DISCORD_SOLVES_WEBHOOK_URL"
+                "LORE_REDIS_PASS", "CREW_JWT_SECRET", "CTF_FLAG", "DISCORD_SOLVES_WEBHOOK_URL", "SMTP_USER", "SMTP_PASS"
             ]
 
             with open(".env", "w") as f:

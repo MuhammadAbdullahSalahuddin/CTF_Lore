@@ -15,4 +15,4 @@ CREATE TABLE flag_submissions (
   submitted_at TIMESTAMPTZ DEFAULT NOW()
 );
 ALTER TABLE flag_submissions ADD COLUMN points INT NOT NULL DEFAULT 0;
-
+ALTER TABLE lore_players ADD COLUMN phone VARCHAR(30);
