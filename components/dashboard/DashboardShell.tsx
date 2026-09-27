@@ -87,10 +87,12 @@ export default function DashboardShell({ tabs }: DashboardShellProps) {
       case "cat": {
         const file = args[0];
         if (file === ".breadcrumb") {
-          // TODO: wire to real OSINT breadcrumb content later
-          //to add: // recovered fragment — partial, rest is corrupted","...internal comms mirror still up as of last check..slack-archive-ctf.duckdns.org"
-          print("[locked] — nothing here yet.");
-        } else {
+         print([
+            "// recovered fragment — partial, rest is corrupted. From a fellow insider",
+            "...internal comms mirror still up as of last check...",
+            "slack-archive-ctf.duckdns.org",
+          ]);
+         } else {
           print(`cat: ${file ?? "(no file given)"}: No such file`);
         }
         break;
